@@ -73,11 +73,21 @@ namespace Aerohockey
                 || puck.puckSprite.Position.X <= 0)
             {
                 puck.direction.X *= -1;
+                ChangePuckSpeed(puck);
             }
             else if(puck.puckSprite.Position.Y >= win.Size.Y - puck.puckSprite.Radius * 2
                 || puck.puckSprite.Position.Y <= 0)
             {
                 puck.direction.Y *= -1;
+                ChangePuckSpeed(puck);
+            }
+        }
+
+        private void ChangePuckSpeed(Puck puck)
+        {
+            if (puck.speed <= 3f)
+            {
+                puck.speed *= 1.125f;
             }
         }
 
