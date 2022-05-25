@@ -1,8 +1,4 @@
-﻿using SFML.Window;
-using SFML.Graphics;
-using System;
-
-namespace Aerohockey
+﻿namespace Aerohockey
 {
     internal class Program
     {

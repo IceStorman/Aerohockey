@@ -1,11 +1,13 @@
 ﻿using SFML.Graphics;
 using SFML.Window;
-using System;
 
 namespace Aerohockey
 {
     public class Player
     {
-        public CircleShape playerModel = new CircleShape(64);
+        public CircleShape playerSprite = new CircleShape(64);
+        public float speed = 1.5f;
+        public Keyboard.Key upKey;
+        public Keyboard.Key downKey;
     }
 }
