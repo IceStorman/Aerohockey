@@ -18,10 +18,10 @@ namespace Aerohockey
             SFML.System.Vector2f player1StartPos = new SFML.System.Vector2f(0, 0);
             SFML.System.Vector2f player2StartPos = new SFML.System.Vector2f(window.Size.X - player2.playerSprite.Radius * 2, window.Size.Y - player2.playerSprite.Radius * 2);
 
-            SetStandartParameters(player1, Color.Blue, player1StartPos, Keyboard.Key.W, Keyboard.Key.S);
-            SetStandartParameters(player2, Color.Red, player2StartPos, Keyboard.Key.Up, Keyboard.Key.Down);
+            player1.SetStandartParameters(Color.Blue, player1StartPos, Keyboard.Key.W, Keyboard.Key.S);
+            player2.SetStandartParameters(Color.Red, player2StartPos, Keyboard.Key.Up, Keyboard.Key.Down);
 
-            SetPuckParameters(window, puck);
+            puck.SetPuckParameters(window);
 
             window.Closed += WindowClosed;
 
@@ -30,64 +30,37 @@ namespace Aerohockey
                 window.DispatchEvents();
                 window.Clear(Color.Cyan);
 
-                window.Draw(player1.playerSprite);
-                window.Draw(player2.playerSprite);
-
-                window.Draw(puck.puckSprite);
-
                 SFML.System.Vector2f newPlayer1Pos = MoveLogic(player1);
                 SFML.System.Vector2f newPlayer2Pos = MoveLogic(player2);
 
                 CheckMove(window, player1, newPlayer1Pos);
                 CheckMove(window, player2, newPlayer2Pos);
 
-                PuckMoving(window, puck);
+                puck.PuckMoving(window);
+
+                TouchPlayer(puck, player1, player2);
+
+                window.Draw(player1.playerSprite);
+                window.Draw(player2.playerSprite);
+
+                window.Draw(puck.puckSprite);
 
                 window.Display();
             }
         }
 
-        private void SetStandartParameters(Player player, Color color, SFML.System.Vector2f startPos, Keyboard.Key upKey, Keyboard.Key downKey)
+        private void TouchPlayer(Puck puck, Player player1, Player player2)
         {
-            player.playerSprite.Position = startPos;
-            player.playerSprite.FillColor = color;
-            player.upKey = upKey;
-            player.downKey = downKey;
-        }
-
-        private void SetPuckParameters(RenderWindow win, Puck puck)
-        {
-            puck.puckSprite.Position = new SFML.System.Vector2f(win.Size.X / 2, win.Size.Y / 2);
-            puck.puckSprite.FillColor = puck.puckColor;
-        }
-
-        private void PuckMoving(RenderWindow win, Puck puck)
-        {
-            puck.puckSprite.Position += puck.direction * puck.speed;
-            ChangePuckDirection(win, puck);
-        }
-
-        private void ChangePuckDirection(RenderWindow win, Puck puck)
-        {
-            if(puck.puckSprite.Position.X >= win.Size.X - puck.puckSprite.Radius * 2
-                || puck.puckSprite.Position.X <= 0)
+            if(puck.puckSprite.Position.X <= player1.playerSprite.Position.X + puck.puckSprite.Radius * 2
+                || puck.puckSprite.Position.X >= player2.playerSprite.Position.X - puck.puckSprite.Radius * 2)
             {
-                puck.direction.X *= -1;
-                ChangePuckSpeed(puck);
-            }
-            else if(puck.puckSprite.Position.Y >= win.Size.Y - puck.puckSprite.Radius * 2
-                || puck.puckSprite.Position.Y <= 0)
-            {
-                puck.direction.Y *= -1;
-                ChangePuckSpeed(puck);
-            }
-        }
-
-        private void ChangePuckSpeed(Puck puck)
-        {
-            if (puck.speed <= 3f)
-            {
-                puck.speed *= 1.125f;
+                if((puck.puckSprite.Position.Y <= player1.playerSprite.Position.Y + puck.puckSprite.Radius * 2
+                    && puck.puckSprite.Position.Y >= player1.playerSprite.Position.Y - puck.puckSprite.Radius * 2)
+                    || (puck.puckSprite.Position.Y <= player2.playerSprite.Position.Y + puck.puckSprite.Radius * 2
+                    && puck.puckSprite.Position.Y >= player2.playerSprite.Position.Y - puck.puckSprite.Radius * 2))
+                {
+                    puck.direction *= -1;
+                }
             }
         }
 
@@ -137,7 +110,7 @@ namespace Aerohockey
             player.playerSprite.Position = newPos;
         }
 
-        void WindowClosed(object sender, EventArgs e)
+        private void WindowClosed(object sender, EventArgs e)
         {
             RenderWindow w = (RenderWindow)sender;
             w.Close();
