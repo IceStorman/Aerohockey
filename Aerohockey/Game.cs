@@ -45,6 +45,8 @@ namespace Aerohockey
 
                 window.Draw(puck.puckSprite);
 
+                SpawnCoin(window);
+
                 window.Display();
             }
         }
@@ -61,6 +63,20 @@ namespace Aerohockey
                 {
                     puck.direction *= -1;
                 }
+            }
+        }
+
+        private void SpawnCoin(RenderWindow win)
+        {
+            Random rnd = new Random();
+            Coin coin = new Coin();
+
+            if (coin.isCoinTaken)
+            {
+                SFML.System.Vector2f newCoinPos = new SFML.System.Vector2f(rnd.Next(0, (int)win.Size.X), rnd.Next(0, (int)win.Size.Y));
+                coin.coinSprite.Position = newCoinPos;
+                win.Draw(coin.coinSprite);
+                coin.isCoinTaken = false;
             }
         }
 
